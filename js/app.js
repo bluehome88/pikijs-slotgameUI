@@ -12,7 +12,7 @@
      - Add tweens pixi, tweens
 */
 
-const app = new PIXI.Application(640, 360, {
+const app = new PIXI.Application(window.innerWidth, window.innerHeight, {
     transparent: true,
     autoResize: true,
     antialias: true,
@@ -48,109 +48,12 @@ class Resources {
 }
 let playerResources = new Resources();
 
-const new_background = [ 
-    "./assets/images/Background/Background_00000.png",
-    "./assets/images/Background/Background_00001.png",
-    "./assets/images/Background/Background_00002.png",
-    "./assets/images/Background/Background_00003.png",
-    "./assets/images/Background/Background_00004.png",
-    "./assets/images/Background/Background_00005.png",
-    "./assets/images/Background/Background_00006.png",
-    "./assets/images/Background/Background_00007.png",
-    "./assets/images/Background/Background_00008.png",
-    "./assets/images/Background/Background_00009.png",
-    "./assets/images/Background/Background_00010.png",
-    "./assets/images/Background/Background_00011.png",
-    "./assets/images/Background/Background_00012.png",
-    "./assets/images/Background/Background_00013.png",
-    "./assets/images/Background/Background_00014.png",
-    "./assets/images/Background/Background_00015.png",
-    "./assets/images/Background/Background_00016.png",
-    "./assets/images/Background/Background_00017.png",
-    "./assets/images/Background/Background_00018.png",
-    "./assets/images/Background/Background_00019.png",
-    "./assets/images/Background/Background_00020.png",
-    "./assets/images/Background/Background_00021.png",
-    "./assets/images/Background/Background_00022.png",
-    "./assets/images/Background/Background_00023.png",
-    "./assets/images/Background/Background_00024.png",
-    "./assets/images/Background/Background_00025.png",
-    "./assets/images/Background/Background_00026.png",
-    "./assets/images/Background/Background_00027.png",
-    "./assets/images/Background/Background_00028.png",
-    "./assets/images/Background/Background_00029.png",
-    "./assets/images/Background/Background_00030.png",
-    "./assets/images/Background/Background_00031.png",
-    "./assets/images/Background/Background_00032.png",
-    "./assets/images/Background/Background_00033.png",
-    "./assets/images/Background/Background_00034.png",
-    "./assets/images/Background/Background_00035.png",
-    "./assets/images/Background/Background_00036.png",
-    "./assets/images/Background/Background_00037.png",
-    "./assets/images/Background/Background_00038.png",
-    "./assets/images/Background/Background_00039.png",
-    "./assets/images/Background/Background_00040.png",
-    "./assets/images/Background/Background_00041.png",
-    "./assets/images/Background/Background_00042.png",
-    "./assets/images/Background/Background_00043.png",
-    "./assets/images/Background/Background_00044.png",
-    "./assets/images/Background/Background_00045.png",
-    "./assets/images/Background/Background_00046.png",
-    "./assets/images/Background/Background_00047.png",
-    "./assets/images/Background/Background_00048.png",
-    "./assets/images/Background/Background_00049.png",
-    "./assets/images/Background/Background_00050.png",
-    "./assets/images/Background/Background_00051.png",
-    "./assets/images/Background/Background_00052.png",
-    "./assets/images/Background/Background_00053.png",
-    "./assets/images/Background/Background_00054.png",
-    "./assets/images/Background/Background_00055.png",
-    "./assets/images/Background/Background_00056.png",
-    "./assets/images/Background/Background_00057.png",
-    "./assets/images/Background/Background_00058.png",
-    "./assets/images/Background/Background_00059.png",
-    "./assets/images/Background/Background_00060.png",
-    "./assets/images/Background/Background_00061.png",
-    "./assets/images/Background/Background_00062.png",
-    "./assets/images/Background/Background_00063.png",
-    "./assets/images/Background/Background_00064.png",
-    "./assets/images/Background/Background_00065.png",
-    "./assets/images/Background/Background_00066.png",
-    "./assets/images/Background/Background_00067.png",
-    "./assets/images/Background/Background_00068.png",
-    "./assets/images/Background/Background_00069.png",
-    "./assets/images/Background/Background_00070.png",
-    "./assets/images/Background/Background_00071.png",
-    "./assets/images/Background/Background_00072.png",
-    "./assets/images/Background/Background_00073.png",
-    "./assets/images/Background/Background_00074.png",
-    "./assets/images/Background/Background_00075.png",
-    "./assets/images/Background/Background_00076.png",
-    "./assets/images/Background/Background_00077.png",
-    "./assets/images/Background/Background_00078.png",
-    "./assets/images/Background/Background_00079.png",
-    "./assets/images/Background/Background_00080.png",
-    "./assets/images/Background/Background_00081.png",
-    "./assets/images/Background/Background_00082.png",
-    "./assets/images/Background/Background_00083.png",
-    "./assets/images/Background/Background_00084.png",
-    "./assets/images/Background/Background_00085.png",
-    "./assets/images/Background/Background_00086.png",
-    "./assets/images/Background/Background_00087.png",
-    "./assets/images/Background/Background_00088.png",
-    "./assets/images/Background/Background_00089.png",
-];
-
 PIXI.loader
-    .add("blue", "./assets/images/Gem Blue.png")
-    .add("green", "./assets/images/Gem Green.png")
-    .add("orange", "./assets/images/Gem Orange.png")
     .add("buttonActive", "./assets/images/spin.png")
     .add("buttonDeactivated", "./assets/images/BTN_Spin_deactivated.png")
     .add("coins", "./assets/images/coin.png")
     .add("yellowBar", "./assets/images/leftArrow.png")
     .add("blueBar", "./assets/images/rightArrow.png")
-    .add("background", "./assets/images/background.png")
     .load(onAssetsLoaded);
 
 
@@ -180,6 +83,21 @@ let wild = PIXI.Texture.fromImage("./assets/images/WILD/WILD_00000.png");
 
 //onAssetsLoaded handler builds the example.
 function onAssetsLoaded() {
+
+    //Background
+    var frames = []
+    for (let i = 0; i <= 89; i++) {
+        if (i < 10) {
+           let texture = PIXI.Texture.fromImage("./assets/images/Background/Background_0000" + i + ".png");
+            frames.push(texture);
+        } else {
+           let texture = PIXI.Texture.fromImage("./assets/images/Background/Background_000" + i + ".png");
+            frames.push(texture);
+        }
+    }
+    let animatedSprite = new PIXI.extras.AnimatedSprite(frames);
+    animatedSprite.play();
+    app.stage.addChild(animatedSprite)
 
     //Create different slot symbols.
     slotTextures = [
