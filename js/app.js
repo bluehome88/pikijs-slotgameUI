@@ -124,12 +124,12 @@ PIXI.loader
     .add("autoplay", "./assets/images/autoplay.png")
     .add("maxbet", "./assets/images/maxbet.png")
     .add("minus", "./assets/images/minus.png")
-    .add("blueBar", "./assets/images/blueBar.png")
     .add("help", "./assets/images/help.png")
     .add("setting", "./assets/images/setting.png")
     .add("logo", "./assets/images/logo.png")
     .add("footer", "./assets/images/footer-background.png")
-    .add("reel", "./assets/images/reel-background.png")
+    .add("reelborder", "./assets/images/reel-background1.png")
+    .add("reel", "./assets/images/reel-background2.png")
     .add("spin", "./assets/images/spin.png")
     .add(res_imgs)
     .load(onAssetsLoaded);
@@ -150,9 +150,10 @@ let terrorist = PIXI.Texture.fromImage("./assets/images/Terrorist/Terrorist_0000
 
 //onAssetsLoaded handler builds the example.
 function onAssetsLoaded() {
-    let topSize = getReelSize(PIXI.loader.resources.logo.texture);
-    let bottomSize = getReelSize(PIXI.loader.resources.footer.texture);
-    let reelSize = getReelSize(PIXI.loader.resources.reel.texture);
+    let topSize = getRealSize(PIXI.loader.resources.logo.texture);
+    let bottomSize = getRealSize(PIXI.loader.resources.footer.texture);
+    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
+    let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
     var _realSize = [];
 /*----------------------------Background------------------------------------*/
     var frames = []
@@ -173,7 +174,7 @@ function onAssetsLoaded() {
 /*----------------------------Logo------------------------------------*/
     let topContainer = new PIXI.Container();
     frames = []
-    realSize = getReelSize(PIXI.loader.resources.logo.texture);
+    realSize = getRealSize(PIXI.loader.resources.logo.texture);
     for (let i = 0; i <= 89; i++) {
         if (i < 10) {
            let texture = PIXI.Texture.fromImage("./assets/images/DE-FUSE_Logo/DE-FUSE_Logo_0000" + i + ".png");
@@ -194,15 +195,27 @@ function onAssetsLoaded() {
 /*-------------------------------------------------------------------------*/
 
 /*----------------------------ReelContainer------------------------------------*/
+    let reelBorderContainer = new PIXI.Container();
+    let reelBorderBackground = new PIXI.Sprite.fromImage('./assets/images/reel-background1.png');
+    reelBorderContainer.addChild(reelBorderBackground);
+
+    reelBorderContainer.pivot.x = reelBorderSize.w/2;
+    reelBorderContainer.pivot.y = 0;
+    reelBorderContainer.x = app.screen.width/2;
+    reelBorderContainer.y = topSize.h - 84.5;
+    reelBorderContainer.scale.y = 0.97;
+
+    app.stage.addChild(reelBorderContainer);
+
     reelContainer = new PIXI.Container();
 
-    let reelBackground = new PIXI.Sprite.fromImage("./assets/images/reel-background.png");
+    let reelBackground = new PIXI.Sprite.fromImage("./assets/images/reel-background2.png");
     reelContainer.addChild(reelBackground);
 
-    let REEL_OFFSET_X = 125;
-    let REEL_OFFSET_Y = 115;
-    const REEL_WIDTH = 1566;
-    const SYMBOL_SIZE = 235;
+    let REEL_OFFSET_X = 15;
+    let REEL_OFFSET_Y = 5;
+    let SYMBOL_SIZE = 250;
+    let SPACE_OFFSET_REEL = 20;
 
     slotTextures = [
         ak47,
@@ -222,7 +235,7 @@ function onAssetsLoaded() {
 
      for (let i = 0; i < 5; i++) {
         const rc = new PIXI.Container();
-        rc.x = REEL_OFFSET_X + i * SYMBOL_SIZE;
+        rc.x = REEL_OFFSET_X + i * SYMBOL_SIZE + i * SPACE_OFFSET_REEL;
         rc.y = REEL_OFFSET_Y;
         reelContainer.addChild(rc);
 
@@ -340,13 +353,22 @@ function onAssetsLoaded() {
         }
     });
 
+    reelContainer.pivot.x = reelSize.w / 2;
+    reelContainer.pivot.y = reelSize.h / 2;
+    reelContainer.x = reelBorderContainer.x;
+    reelContainer.y = reelBorderContainer.y + reelBorderSize.h / 2 - 28;
+    reelContainer.scale.set(0.973, 0.938);
 
-    reelContainer.pivot.x = reelSize.w/2;
-    reelContainer.pivot.y = 0;
-    reelContainer.x = app.screen.width/2;
-    reelContainer.y = topSize.h - 84.5;
-    reelContainer.scale.y = 0.97;
-    
+    const reel_mask = new PIXI.Graphics();
+    reel_mask.beginFill(0xFF3300);
+    reel_mask.drawRect(
+        reelContainer.x - reelSize.w / 2, 
+        reelContainer.y - reelSize.h / 2, 
+        reelContainer.x + reelSize.w / 2, 
+        reelContainer.y + reelSize.h / 2 - 175, 
+    );
+    reel_mask.endFill();
+    reelContainer.mask = reel_mask;
 
     app.stage.addChild(reelContainer);
 /*-------------------------------------------------------------------------*/
@@ -407,7 +429,7 @@ function onAssetsLoaded() {
     btnCenterHold.pivot.x = bottomSize.w / 2;
     btnCenterHold.pivot.y = bottomSize.h / 2;
 
-    _realSize = getReelSize(PIXI.loader.resources.autoplay.texture);
+    _realSize = getRealSize(PIXI.loader.resources.autoplay.texture);
     const autoplay = makeImageButton(
         './assets/images/autoplay.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
@@ -420,7 +442,7 @@ function onAssetsLoaded() {
         btnCenterHold
     );
 
-    _realSize = getReelSize(PIXI.loader.resources.maxbet.texture);
+    _realSize = getRealSize(PIXI.loader.resources.maxbet.texture);
     const maxbet = makeImageButton(
         './assets/images/maxbet.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
@@ -433,7 +455,7 @@ function onAssetsLoaded() {
         btnCenterHold
     );
 
-    _realSize = getReelSize(PIXI.loader.resources.spin.texture);
+    _realSize = getRealSize(PIXI.loader.resources.spin.texture);
     const spinActive = makeImageButton(
         './assets/images/spin.png',
         './assets/sounds/mp3/zapsplat_foley_money_pouch_fabric_coins_down_on_surface_006_15052.mp3',
@@ -456,7 +478,7 @@ function onAssetsLoaded() {
 
     const btnSettingHold = new PIXI.Container();
 
-    _realSize = getReelSize(PIXI.loader.resources.setting.texture);
+    _realSize = getRealSize(PIXI.loader.resources.setting.texture);
     const setButton = makeImageButton(
         './assets/images/setting.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
@@ -469,7 +491,7 @@ function onAssetsLoaded() {
         btnSettingHold
     );
 
-    _realSize = getReelSize(PIXI.loader.resources.help.texture);
+    _realSize = getRealSize(PIXI.loader.resources.help.texture);
     const helpButton = makeImageButton(
         './assets/images/help.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
@@ -526,7 +548,7 @@ function onAssetsLoaded() {
     levelValue.pivot.y = levelValue.height / 2;
 
     //coin button
-    _realSize = getReelSize(PIXI.loader.resources.minus.texture);
+    _realSize = getRealSize(PIXI.loader.resources.minus.texture);
     const levelDown = makeImageButton(
         './assets/images/minus.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
@@ -648,7 +670,7 @@ function onAssetsLoaded() {
 
 /*-------------------------------------------------------------------------*/
 
-    function getReelSize(_texture) {
+    function getRealSize(_texture) {
         const _sprite = new PIXI.Sprite(_texture);
         let _result = {w:_sprite.width, h:_sprite.height};
         return _result;
