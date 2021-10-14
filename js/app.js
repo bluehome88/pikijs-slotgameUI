@@ -100,24 +100,24 @@ let reelContainer;
 let reel;
 let running = false;
 
-for (var i = 0 ; i < img_src.length ; i++) {
-    slotTextures.push(PIXI.Texture.fromImage(img_src[i] + "00.png"));
-    var _frames = [];
-    for (let j = 0; j <= 89; j++) {
-        if (j < 10) {
-            res_imgs.push(img_src[i] + "0" + j + ".png");
-           let texture = PIXI.Texture.fromImage(img_src[i] + "0" + j + ".png");
-            _frames.push(texture);
-        } else {
-            res_imgs.push(img_src[i] + j + ".png");
-           let texture = PIXI.Texture.fromImage(img_src[i] + j + ".png");
-            _frames.push(texture);
-        }
-    }
-    let _animat = new PIXI.extras.AnimatedSprite(_frames);
-    _animat.play();
-    slotAnimations.push(_animat);
-}
+// for (var i = 0 ; i < img_src.length ; i++) {
+//     slotTextures.push(PIXI.Texture.fromImage(img_src[i] + "00.png"));
+//     var _frames = [];
+//     for (let j = 0; j <= 89; j++) {
+//         if (j < 10) {
+//             res_imgs.push(img_src[i] + "0" + j + ".png");
+//            let texture = PIXI.Texture.fromImage(img_src[i] + "0" + j + ".png");
+//             _frames.push(texture);
+//         } else {
+//             res_imgs.push(img_src[i] + j + ".png");
+//            let texture = PIXI.Texture.fromImage(img_src[i] + j + ".png");
+//             _frames.push(texture);
+//         }
+//     }
+//     let _animat = new PIXI.extras.AnimatedSprite(_frames);
+//     _animat.play();
+//     slotAnimations.push(_animat);
+// }
 
 PIXI.loader
     .add("background", "./assets/images/background.png")
@@ -129,7 +129,7 @@ PIXI.loader
     .add("logo", "./assets/images/logo.png")
     .add("footer", "./assets/images/footer-background.png")
     .add("reelborder", "./assets/images/reel-background1.png")
-    .add("reel", "./assets/images/reel-background2.png")
+    .add("reel", "./assets/images/reel-background3.png")
     .add("spin", "./assets/images/spin.png")
     .add(res_imgs)
     .load(onAssetsLoaded);
@@ -157,7 +157,7 @@ function onAssetsLoaded() {
     var _realSize = [];
 /*----------------------------Background------------------------------------*/
     var frames = []
-    for (let i = 0; i <= 89; i++) {
+    for (let i = 0; i <= 87; i++) {
         if (i < 10) {
            let texture = PIXI.Texture.fromImage("./assets/images/Background/Background_0000" + i + ".png");
             frames.push(texture);
@@ -175,7 +175,7 @@ function onAssetsLoaded() {
     let topContainer = new PIXI.Container();
     frames = []
     realSize = getRealSize(PIXI.loader.resources.logo.texture);
-    for (let i = 0; i <= 89; i++) {
+    for (let i = 0; i <= 87; i++) {
         if (i < 10) {
            let texture = PIXI.Texture.fromImage("./assets/images/DE-FUSE_Logo/DE-FUSE_Logo_0000" + i + ".png");
             frames.push(texture);
@@ -194,6 +194,25 @@ function onAssetsLoaded() {
     app.stage.addChild(topContainer);
 /*-------------------------------------------------------------------------*/
 
+for (var i = 0 ; i < img_src.length ; i++) {
+    slotTextures.push(PIXI.Texture.fromImage(img_src[i] + "00.png"));
+    var _frames = [];
+    for (let j = 0; j <= 87; j++) {
+        if (j < 10) {
+            res_imgs.push(img_src[i] + "0" + j + ".png");
+           let texture = PIXI.Texture.fromImage(img_src[i] + "0" + j + ".png");
+            _frames.push(texture);
+        } else {
+            res_imgs.push(img_src[i] + j + ".png");
+           let texture = PIXI.Texture.fromImage(img_src[i] + j + ".png");
+            _frames.push(texture);
+        }
+    }
+    let _animat = new PIXI.extras.AnimatedSprite(_frames);
+    _animat.play();
+    slotAnimations.push(_animat);
+}
+
 /*----------------------------ReelContainer------------------------------------*/
     let reelBorderContainer = new PIXI.Container();
     let reelBorderBackground = new PIXI.Sprite.fromImage('./assets/images/reel-background1.png');
@@ -209,13 +228,13 @@ function onAssetsLoaded() {
 
     reelContainer = new PIXI.Container();
 
-    let reelBackground = new PIXI.Sprite.fromImage("./assets/images/reel-background2.png");
+    let reelBackground = new PIXI.Sprite.fromImage("./assets/images/reel-background3.png");
     reelContainer.addChild(reelBackground);
 
-    let REEL_OFFSET_X = 15;
+    let REEL_OFFSET_X = 0;
     let REEL_OFFSET_Y = 5;
-    let SYMBOL_SIZE = 250;
-    let SPACE_OFFSET_REEL = 20;
+    let SYMBOL_SIZE = 258;
+    let SPACE_OFFSET_REEL = 17;
 
     slotTextures = [
         ak47,
@@ -257,10 +276,11 @@ function onAssetsLoaded() {
         //Build the symbols
         for (let j = 0; j < 3; j++) {
             // if (selected_large_slot) {
-            //     selected_large_slot = false;
+                // selected_large_slot = false;
             //     continue;
             // }
             let selected_slot = Math.floor(Math.random() * slotTextures.length);
+            // selected_slot = 0;
             if (j > 1 && selected_slot > 10) {
                 console.log("again", i, j, selected_slot);
                 selected_slot = Math.floor(Math.random() * (slotTextures.length - 2));
@@ -271,19 +291,29 @@ function onAssetsLoaded() {
             symbol.y = j * SYMBOL_SIZE;
             symbol.scale.x = symbol.scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
             symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
-            reel.symbols.push(symbol);
-            rc.addChild(symbol);
+            console.log("selected_large_slot", selected_large_slot);
+            if (selected_large_slot) {
+                console.log("hide", i, j, selected_slot);
+                symbol.visible = false;
+            }
+            // reel.symbols.push(symbol);
+            // rc.addChild(symbol);
 
-            // slotAnimations[selected_slot].y = j * SYMBOL_SIZE;
-            // slotAnimations[selected_slot].scale.x = slotAnimations[selected_slot].scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            // slotAnimations[selected_slot].x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
-            // reel.symbols.push(slotAnimations[selected_slot]);
-            // rc.addChild(slotAnimations[selected_slot]);
-            // if (selected_slot > 10) {
-            //     selected_large_slot = true
-            // } else {
-            //     selected_large_slot = false;
-            // }
+            slotAnimations[selected_slot].y = j * SYMBOL_SIZE;
+            slotAnimations[selected_slot].scale.x = slotAnimations[selected_slot].scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+            slotAnimations[selected_slot].x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
+            console.log("selected_large_slot", selected_large_slot);
+            if (selected_large_slot) {
+                console.log("hide", i, j, selected_slot);
+                slotAnimations[selected_slot].visible = false;
+            }
+            reel.symbols.push(slotAnimations[selected_slot]);
+            rc.addChild(slotAnimations[selected_slot]);
+            if (selected_slot > 10) {
+                selected_large_slot = true
+            } else {
+                selected_large_slot = false;
+            }
         }
         reels.push(reel);
     }
@@ -303,13 +333,14 @@ function onAssetsLoaded() {
 
         for (let i = 0; i < reels.length; i++) {
             const r = reels[i];
-            const extra = Math.floor(Math.random() * slotTextures.length);
+            console.log(r);
+            // const extra = Math.floor(Math.random() * 5);
             tweenTo(
                 r, 
                 "position", 
-                r.position + 10 + i * 5 + extra, 
-                2500 + i * 600 + extra * 600, 
-                backout(0.6), 
+                r.position + 10 + i * 5, 
+                2500 + i * 600, 
+                backout(10), 
                 null, 
                 i == reels.length - 1 ? reelsComplete : null
             );
@@ -337,6 +368,7 @@ function onAssetsLoaded() {
             r.blur.blurY = (r.position - r.previousPosition) * 8;
             r.previousPosition = r.position;
 
+            var selected_large_slot = false;
             //Update symbol positions on reel.
             for (let j = 0; j < r.symbols.length; j++) {
                 const s = r.symbols[j];
@@ -348,6 +380,38 @@ function onAssetsLoaded() {
                     s.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
                     s.scale.x = s.scale.y = Math.min(SYMBOL_SIZE / s.texture.width, SYMBOL_SIZE / s.texture.height);
                     s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
+
+
+                    // let selected_slot = Math.floor(Math.random() * slotTextures.length);
+                    // // selected_slot = 0;
+                    // if (j > 1 && selected_slot > 10) {
+                    //     console.log("again", i, j, selected_slot);
+                    //     selected_slot = Math.floor(Math.random() * (slotTextures.length - 2));
+                    // }
+                    // console.log(i, j, selected_slot);
+                    // const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
+                    // // Scale the symbol to fit symbol area.
+                    // symbol.y = j * SYMBOL_SIZE;
+                    // symbol.scale.x = symbol.scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+                    // symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
+                    // // reel.symbols.push(symbol);
+                    // // rc.addChild(symbol);
+
+                    // slotAnimations[selected_slot].y = j * SYMBOL_SIZE;
+                    // slotAnimations[selected_slot].scale.x = slotAnimations[selected_slot].scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+                    // slotAnimations[selected_slot].x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
+                    // console.log("selected_large_slot", selected_large_slot);
+                    // if (selected_large_slot) {
+                    //     console.log("hide", i, j, selected_slot);
+                    //     slotAnimations[selected_slot].visible = false;
+                    // }
+                    // reel.symbols.push(slotAnimations[selected_slot]);
+                    // rc.addChild(slotAnimations[selected_slot]);
+                    // if (selected_slot > 10) {
+                    //     selected_large_slot = true
+                    // } else {
+                    //     selected_large_slot = false;
+                    // }
                 }
             }
         }
@@ -434,7 +498,7 @@ function onAssetsLoaded() {
         './assets/images/autoplay.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
         './assets/sounds/ogg/multimedia_button_click_006.mp3',
-        bottomSize.w / 2 - 5 - 50,
+        bottomSize.w / 2 - 5 - 49,
         bottomSize.h / 2 + 8,
         _realSize.w,
         _realSize.h / 2,
@@ -447,7 +511,7 @@ function onAssetsLoaded() {
         './assets/images/maxbet.png',
         './assets/sounds/mp3/multimedia_button_click_006.mp3',
         './assets/sounds/ogg/multimedia_button_click_006.mp3',
-        bottomSize.w / 2 - 5 + 50,
+        bottomSize.w / 2 - 5 + 48,
         bottomSize.h / 2 + 8,
         0,
         _realSize.h / 2,
