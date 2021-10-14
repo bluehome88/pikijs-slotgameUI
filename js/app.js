@@ -157,7 +157,7 @@ function onAssetsLoaded() {
     var _realSize = [];
 /*----------------------------Background------------------------------------*/
     var frames = []
-    for (let i = 0; i <= 87; i++) {
+    for (let i = 0; i <= 2; i++) {
         if (i < 10) {
            let texture = PIXI.Texture.fromImage("./assets/images/Background/Background_0000" + i + ".png");
             frames.push(texture);
@@ -175,7 +175,7 @@ function onAssetsLoaded() {
     let topContainer = new PIXI.Container();
     frames = []
     realSize = getRealSize(PIXI.loader.resources.logo.texture);
-    for (let i = 0; i <= 87; i++) {
+    for (let i = 0; i <= 2; i++) {
         if (i < 10) {
            let texture = PIXI.Texture.fromImage("./assets/images/DE-FUSE_Logo/DE-FUSE_Logo_0000" + i + ".png");
             frames.push(texture);
@@ -194,24 +194,24 @@ function onAssetsLoaded() {
     app.stage.addChild(topContainer);
 /*-------------------------------------------------------------------------*/
 
-for (var i = 0 ; i < img_src.length ; i++) {
-    slotTextures.push(PIXI.Texture.fromImage(img_src[i] + "00.png"));
-    var _frames = [];
-    for (let j = 0; j <= 87; j++) {
-        if (j < 10) {
-            res_imgs.push(img_src[i] + "0" + j + ".png");
-           let texture = PIXI.Texture.fromImage(img_src[i] + "0" + j + ".png");
-            _frames.push(texture);
-        } else {
-            res_imgs.push(img_src[i] + j + ".png");
-           let texture = PIXI.Texture.fromImage(img_src[i] + j + ".png");
-            _frames.push(texture);
-        }
-    }
-    let _animat = new PIXI.extras.AnimatedSprite(_frames);
-    _animat.play();
-    slotAnimations.push(_animat);
-}
+// for (var i = 0 ; i < img_src.length ; i++) {
+//     slotTextures.push(PIXI.Texture.fromImage(img_src[i] + "00.png"));
+//     var _frames = [];
+//     for (let j = 0; j <= 87; j++) {
+//         if (j < 10) {
+//             res_imgs.push(img_src[i] + "0" + j + ".png");
+//            let texture = PIXI.Texture.fromImage(img_src[i] + "0" + j + ".png");
+//             _frames.push(texture);
+//         } else {
+//             res_imgs.push(img_src[i] + j + ".png");
+//            let texture = PIXI.Texture.fromImage(img_src[i] + j + ".png");
+//             _frames.push(texture);
+//         }
+//     }
+//     let _animat = new PIXI.extras.AnimatedSprite(_frames);
+//     _animat.play();
+//     slotAnimations.push(_animat);
+// }
 
 /*----------------------------ReelContainer------------------------------------*/
     let reelBorderContainer = new PIXI.Container();
@@ -275,46 +275,46 @@ for (var i = 0 ; i < img_src.length ; i++) {
 
         //Build the symbols
         for (let j = 0; j < 3; j++) {
-            // if (selected_large_slot) {
-                // selected_large_slot = false;
-            //     continue;
-            // }
             let selected_slot = Math.floor(Math.random() * slotTextures.length);
-            // selected_slot = 0;
             if (j > 1 && selected_slot > 10) {
                 console.log("again", i, j, selected_slot);
                 selected_slot = Math.floor(Math.random() * (slotTextures.length - 2));
             }
-            console.log(i, j, selected_slot);
-            const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-            // Scale the symbol to fit symbol area.
-            symbol.y = j * SYMBOL_SIZE;
-            symbol.scale.x = symbol.scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
-            console.log("selected_large_slot", selected_large_slot);
-            if (selected_large_slot) {
-                console.log("hide", i, j, selected_slot);
-                symbol.visible = false;
-            }
-            // reel.symbols.push(symbol);
-            // rc.addChild(symbol);
 
-            slotAnimations[selected_slot].y = j * SYMBOL_SIZE;
-            slotAnimations[selected_slot].scale.x = slotAnimations[selected_slot].scale.y = Math.min(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            slotAnimations[selected_slot].x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
-            console.log("selected_large_slot", selected_large_slot);
+            const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
+
+            var _frames = [];
+            for (let j = 0; j <= 87; j++) {
+                if (j < 10) {
+                    res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
+                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
+                    _frames.push(texture);
+                } else {
+                    res_imgs.push(img_src[selected_slot] + j + ".png");
+                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
+                    _frames.push(texture);
+                }
+            }
+            let _animat = new PIXI.extras.AnimatedSprite(_frames);
             if (selected_large_slot) {
                 console.log("hide", i, j, selected_slot);
-                slotAnimations[selected_slot].visible = false;
+                _animat.visible = false;
             }
-            reel.symbols.push(slotAnimations[selected_slot]);
-            rc.addChild(slotAnimations[selected_slot]);
-            if (selected_slot > 10) {
+            _animat.play();
+
+            _animat.y = j * SYMBOL_SIZE;
+            _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+            _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
+
+            if (selected_slot > 10)
                 selected_large_slot = true
-            } else {
+            else
                 selected_large_slot = false;
-            }
+
+            reel.symbols.push(_animat);
+            rc.addChild(_animat);
         }
+
         reels.push(reel);
     }
 
@@ -333,8 +333,6 @@ for (var i = 0 ; i < img_src.length ; i++) {
 
         for (let i = 0; i < reels.length; i++) {
             const r = reels[i];
-            console.log(r);
-            // const extra = Math.floor(Math.random() * 5);
             tweenTo(
                 r, 
                 "position", 
