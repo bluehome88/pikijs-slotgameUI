@@ -394,11 +394,6 @@ function lerp(a1, a2, t) {
     return a1 * (1 - t) + a2 * t;
 }
 
-//Basic lerp funtion.
-function lerp(a1, a2, t) {
-    return a1 * (1 - t) + a2 * t;
-}
-
 //Backout function from tweenjs.
 //https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
 backout = amount => t => --t * t * ((amount + 1) * t + amount) + 1;
@@ -408,7 +403,7 @@ function generateRandomSlots(){
     for (let col = 0; col < 5; col++) {
         let selected_large_slot = false;
 
-        for (let row = 0; row < 3; row++) {
+        for (let row = 0; row < 4; row++) {
             let slot_number = Math.floor(Math.random() * slotTextures.length);
             if (row > 1 && slot_number > 10) {
                 slot_number = Math.floor(Math.random() * (slotTextures.length - 2));
@@ -457,7 +452,7 @@ function renderSlots( selected_slot_ids, animation ){
         rc.filters = [reel.blur];
 
         //Build the symbols
-        for (let j = 0; j < 3; j++) {
+        for (let j = 0; j < 4; j++) {
             let key = i*3+j;
             let selected_slot = selected_slot_ids[key];
             if( selected_slot < 0 )
@@ -481,7 +476,7 @@ function renderSlots( selected_slot_ids, animation ){
 
             _animat.y = j * SYMBOL_SIZE;
             _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
+            _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
             if( selected_slot == 0 )
                 _animat.x -= 40;
 
@@ -543,25 +538,28 @@ function startPlay() {
 
     for (let i = 0; i < reels.length; i++) {
         const r = reels[i];
+        const extra = Math.floor(Math.random() * 3);
+        const target = r.position + 10 + i * 5 + extra;
+        const time = 2500 + i * 600 + extra * 600;
         tweenTo(
             r, 
-            "position", 
-            r.position + 10 + i * 5, 
-            2500 + i * 600, 
-            backout(10), 
+            'position', 
+            target, 
+            time, 
+            backout(0.5), 
             null, 
-            i == reels.length - 1 ? reelsComplete : null
+            i === reels.length - 1 ? reelsComplete : null
         );
     }
 }
 
 //Reels done handler.
 function reelsComplete() {
+    running = false;
+
     // display winner Frame
     animatedSpriteWin.play();
     animatedSpriteWin.visible = true;
-
-    running = false;
 }
 
 function tweenTo(object, property, target, time, easing, onchange, oncomplete) {
