@@ -403,7 +403,7 @@ function generateRandomSlots(){
     for (let col = 0; col < 5; col++) {
         let selected_large_slot = false;
 
-        for (let row = 0; row < 4; row++) {
+        for (let row = 0; row < slotTextures.length; row++) {
             let slot_number = Math.floor(Math.random() * slotTextures.length);
             if (row > 1 && slot_number > 10) {
                 slot_number = Math.floor(Math.random() * (slotTextures.length - 2));
@@ -452,7 +452,7 @@ function renderSlots( selected_slot_ids, animation ){
         rc.filters = [reel.blur];
 
         //Build the symbols
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < slotTextures.length; j++) {
             let key = i*3+j;
             let selected_slot = selected_slot_ids[key];
             if( selected_slot < 0 )
