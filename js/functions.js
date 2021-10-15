@@ -511,9 +511,9 @@ function adjustContainerPosition(){
     reel_mask.beginFill(0xFF3300);
     reel_mask.drawRect(
         reelContainer.x - reelSize.w / 2, 
-        reelContainer.y - reelSize.h / 2, 
+        reelContainer.y - reelSize.h / 2 + 23, 
         reelContainer.x + reelSize.w / 2, 
-        reelContainer.y + reelSize.h / 2 - 175, 
+        reelContainer.y + reelSize.h / 2 - 175 - 23, 
     );
     reel_mask.endFill();
     reelContainer.mask = reel_mask;
