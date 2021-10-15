@@ -96,5 +96,5 @@ app.ticker.add(delta => {
     }
 });
 
-resize( );
+resize();
 window.onresize = resize;

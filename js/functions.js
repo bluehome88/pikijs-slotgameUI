@@ -1,244 +1,3 @@
-//Basic lerp funtion.
-function lerp(a1, a2, t) {
-    return a1 * (1 - t) + a2 * t;
-}
-
-//Basic lerp funtion.
-function lerp(a1, a2, t) {
-    return a1 * (1 - t) + a2 * t;
-}
-
-//Backout function from tweenjs.
-//https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
-backout = amount => t => --t * t * ((amount + 1) * t + amount) + 1;
-
-function generateRandomSlots(){
-    const rendered_slots = [];
-    for (let col = 0; col < 5; col++) {
-        let selected_large_slot = false;
-
-        for (let row = 0; row < 10; row++) {
-            let slot_number = Math.floor(Math.random() * slotTextures.length);
-            if (row > 1 && slot_number > 10) {
-                slot_number = Math.floor(Math.random() * (slotTextures.length - 2));
-            }
-
-            if ( !selected_large_slot )
-                rendered_slots.push( slot_number )
-            else
-                rendered_slots.push( -1 )
-
-            if (slot_number > 10)
-                selected_large_slot = true
-            else
-                selected_large_slot = false;
-        }
-    }
-
-    return rendered_slots;
-}
-
-var REEL_OFFSET_X = 0;
-var REEL_OFFSET_Y = 5;
-var SYMBOL_SIZE = 258;
-var SPACE_OFFSET_REEL = 17;
-
-function renderWinner(){
-    /* ---------------------------- Winning Start ------------------------------------*/
-    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
-    let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
-
-    let winContainer = new PIXI.Container();
-    frames = []
-    realSize = getRealSize(PIXI.loader.resources.logo.texture);
-    for (let i = 0; i <= image_frames; i++) {
-        if (i < 10) {
-            let texture = PIXI.Texture.fromImage("./assets/images/Anticipation/Anticipation_0000" + i + ".png");
-            frames.push(texture);
-        } else {
-            let texture = PIXI.Texture.fromImage("./assets/images/Anticipation/Anticipation_000" + i + ".png");
-            frames.push(texture);
-        }
-    }
-
-    animatedSpriteWin = new PIXI.extras.AnimatedSprite(frames);
-    animatedSpriteWin.stop();
-    animatedSpriteWin.visible = false;
-    winContainer.addChild(animatedSpriteWin);
-    winContainer.pivot.x = 0;
-    winContainer.pivot.y = 0;
-    winContainer.x = reelBorderSize.w / 2 - 250 - (258 + 17) * 0.975 * 0;
-    winContainer.y = -8;
-    reelBorderContainer.addChild(winContainer);
-    /* ------------------------- End Winner Frame -----------------------------------*/
-}
-
-function renderSlots( selected_slot_ids, animation ){
-    
-    for (let i = 0; i < 5; i++) {
-        const rc = new PIXI.Container();
-        rc.x = REEL_OFFSET_X + i * SYMBOL_SIZE + i * SPACE_OFFSET_REEL;
-        rc.y = REEL_OFFSET_Y;
-        reelContainer.addChild(rc);
-
-        reel = {
-            container: rc,
-            symbols: [],
-            position: 0,
-            previousPosition: 0,
-            blur: new PIXI.filters.BlurFilter()
-        };
-
-        //let newposition = reel.reelContainer.getChildIndex;
-        reel.blur.blurX = 0;
-        reel.blur.blurY = 0;
-        rc.filters = [reel.blur];
-
-        //Build the symbols
-        for (let j = 0; j < 10; j++) {
-            let key = i*3+j;
-            let selected_slot = selected_slot_ids[key];
-            if( selected_slot < 0 )
-                continue;
-
-            const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-
-            var _frames = [];
-            for (let j = 0; j <= image_frames; j++) {
-                if (j < 10) {
-                    res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
-                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
-                    _frames.push(texture);
-                } else {
-                    res_imgs.push(img_src[selected_slot] + j + ".png");
-                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
-                    _frames.push(texture);
-                }
-            }
-            let _animat = new PIXI.extras.AnimatedSprite(_frames);
-
-            //_animat.play();
-
-            _animat.y = j * SYMBOL_SIZE;
-            _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
-            if( selected_slot == 0 )
-                _animat.x -= 40;
-
-
-            reel.symbols.push(_animat);
-            rc.addChild(_animat);
-
-            slotAnimations.push( _animat )
-        }
-
-        reels.push(reel);
-    }
-    if( animation == true ){
-        setTimeout(function(){
-            for( ani_index = 0; ani_index < slotAnimations.length; ani_index++ )
-                slotAnimations[ani_index].play();
-        }, 3000);
-    }
-}
-
-function adjustContainerPosition(){
-    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
-    let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
-
-    reelContainer.pivot.x = reelSize.w / 2;
-    reelContainer.pivot.y = reelSize.h / 2;
-    reelContainer.x = reelBorderContainer.x;
-    reelContainer.y = reelBorderContainer.y + reelBorderSize.h / 2 - 28;
-    reelContainer.scale.set(0.973, 0.938);
-
-    const reel_mask = new PIXI.Graphics();
-    reel_mask.beginFill(0xFF3300);
-    reel_mask.drawRect(
-        reelContainer.x - reelSize.w / 2, 
-        reelContainer.y - reelSize.h / 2, 
-        reelContainer.x + reelSize.w / 2, 
-        reelContainer.y + reelSize.h / 2 - 175, 
-    );
-    reel_mask.endFill();
-    reelContainer.mask = reel_mask;
-}
-
-//Function to start playing.
-function startPlay() {
-    if (running) return;
-    running = true;
-
-    // hide winner Frame
-    animatedSpriteWin.stop();
-    animatedSpriteWin.visible = false;
-
-    // Add sound when reels running is set to true
-    if (running){
-        const sound = new Howl({
-            src: './assets/sounds/mp3/arcade-game-fruit-machine-jackpot-002-long.mp3'
-        });
-        sound.play();
-    };
-
-    for (let i = 0; i < reels.length; i++) {
-        const r = reels[i];
-        tweenTo(
-            r, 
-            "position", 
-            r.position + 10 + i * 5, 
-            2500 + i * 600, 
-            backout(10), 
-            null, 
-            i == reels.length - 1 ? reelsComplete : null
-        );
-    }
-}
-
-//Reels done handler.
-function reelsComplete() {
-    // display winner Frame
-    animatedSpriteWin.play();
-    animatedSpriteWin.visible = true;
-
-    running = false;
-}
-
-function getRealSize(_texture) {
-    const _sprite = new PIXI.Sprite(_texture);
-    let _result = {w:_sprite.width, h:_sprite.height};
-    return _result;
-}
-
-function tweenTo(object, property, target, time, easing, onchange, oncomplete) {
-    const tween = {
-        object,
-        property,
-        propertyBeginValue: object[property],
-        target,
-        easing,
-        time,
-        change: onchange,
-        complete: oncomplete,
-        start: Date.now()
-    };
-
-    tweening.push(tween);
-    return tween;
-}
-
-function resize() {
-    if (window.innerWidth / window.innerHeight >= ratio) {
-        var w = window.innerHeight * ratio;
-        var h = window.innerHeight;
-    } else {
-        var w = window.innerWidth;
-        var h = window.innerWidth / ratio;
-    }
-    app.view.style.width = w + 'px';
-    app.view.style.height = h + 'px';
-}
-
 function renderBackground(){
     let frames = []
     for (let i = 0; i <= image_frames; i++) {
@@ -302,6 +61,34 @@ function renderBoardFrame(){
     reelBorderContainer.addChild(reelBackground);
 
     app.stage.addChild(reelBorderContainer);
+}
+
+function renderWinner(){
+    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
+    let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
+
+    let winContainer = new PIXI.Container();
+    frames = []
+    realSize = getRealSize(PIXI.loader.resources.logo.texture);
+    for (let i = 0; i <= image_frames; i++) {
+        if (i < 10) {
+            let texture = PIXI.Texture.fromImage("./assets/images/Anticipation/Anticipation_0000" + i + ".png");
+            frames.push(texture);
+        } else {
+            let texture = PIXI.Texture.fromImage("./assets/images/Anticipation/Anticipation_000" + i + ".png");
+            frames.push(texture);
+        }
+    }
+
+    animatedSpriteWin = new PIXI.extras.AnimatedSprite(frames);
+    animatedSpriteWin.stop();
+    animatedSpriteWin.visible = false;
+    winContainer.addChild(animatedSpriteWin);
+    winContainer.pivot.x = 0;
+    winContainer.pivot.y = 0;
+    winContainer.x = reelBorderSize.w / 2 - 250 - (258 + 17) * 0.975 * 0;
+    winContainer.y = -8;
+    reelBorderContainer.addChild(winContainer);
 }
 
 function renderFooter(){
@@ -601,3 +388,217 @@ function renderFooter(){
 
     app.stage.addChild(footerContainer);
 }
+
+//Basic lerp funtion.
+function lerp(a1, a2, t) {
+    return a1 * (1 - t) + a2 * t;
+}
+
+//Basic lerp funtion.
+function lerp(a1, a2, t) {
+    return a1 * (1 - t) + a2 * t;
+}
+
+//Backout function from tweenjs.
+//https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
+backout = amount => t => --t * t * ((amount + 1) * t + amount) + 1;
+
+function generateRandomSlots(){
+    const rendered_slots = [];
+    for (let col = 0; col < 5; col++) {
+        let selected_large_slot = false;
+
+        for (let row = 0; row < 3; row++) {
+            let slot_number = Math.floor(Math.random() * slotTextures.length);
+            if (row > 1 && slot_number > 10) {
+                slot_number = Math.floor(Math.random() * (slotTextures.length - 2));
+            }
+
+            if ( !selected_large_slot )
+                rendered_slots.push( slot_number )
+            else
+                rendered_slots.push( -1 )
+
+            if (slot_number > 10)
+                selected_large_slot = true
+            else
+                selected_large_slot = false;
+        }
+    }
+
+    return rendered_slots;
+}
+
+var REEL_OFFSET_X = 0;
+var REEL_OFFSET_Y = 5;
+var SYMBOL_SIZE = 258;
+var SPACE_OFFSET_REEL = 17;
+
+
+function renderSlots( selected_slot_ids, animation ){
+    
+    for (let i = 0; i < 5; i++) {
+        const rc = new PIXI.Container();
+        rc.x = REEL_OFFSET_X + i * SYMBOL_SIZE + i * SPACE_OFFSET_REEL;
+        rc.y = REEL_OFFSET_Y;
+        reelContainer.addChild(rc);
+
+        reel = {
+            container: rc,
+            symbols: [],
+            position: 0,
+            previousPosition: 0,
+            blur: new PIXI.filters.BlurFilter()
+        };
+
+        //let newposition = reel.reelContainer.getChildIndex;
+        reel.blur.blurX = 0;
+        reel.blur.blurY = 0;
+        rc.filters = [reel.blur];
+
+        //Build the symbols
+        for (let j = 0; j < 3; j++) {
+            let key = i*3+j;
+            let selected_slot = selected_slot_ids[key];
+            if( selected_slot < 0 )
+                continue;
+
+            const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
+
+            var _frames = [];
+            for (let j = 0; j <= image_frames; j++) {
+                if (j < 10) {
+                    res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
+                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
+                    _frames.push(texture);
+                } else {
+                    res_imgs.push(img_src[selected_slot] + j + ".png");
+                   let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
+                    _frames.push(texture);
+                }
+            }
+            let _animat = new PIXI.extras.AnimatedSprite(_frames);
+
+            _animat.y = j * SYMBOL_SIZE;
+            _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+            _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 9);
+            if( selected_slot == 0 )
+                _animat.x -= 40;
+
+
+            reel.symbols.push(_animat);
+            rc.addChild(_animat);
+
+            slotAnimations.push( _animat )
+        }
+
+        reels.push(reel);
+    }
+    if( animation == true ){
+        setTimeout(function(){
+            for( ani_index = 0; ani_index < slotAnimations.length; ani_index++ )
+                slotAnimations[ani_index].play();
+        }, 3000);
+    }
+}
+
+function adjustContainerPosition(){
+    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
+    let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
+
+    reelContainer.pivot.x = reelSize.w / 2;
+    reelContainer.pivot.y = reelSize.h / 2;
+    reelContainer.x = reelBorderContainer.x;
+    reelContainer.y = reelBorderContainer.y + reelBorderSize.h / 2 - 28;
+    reelContainer.scale.set(0.973, 0.938);
+
+    const reel_mask = new PIXI.Graphics();
+    reel_mask.beginFill(0xFF3300);
+    reel_mask.drawRect(
+        reelContainer.x - reelSize.w / 2, 
+        reelContainer.y - reelSize.h / 2, 
+        reelContainer.x + reelSize.w / 2, 
+        reelContainer.y + reelSize.h / 2 - 175, 
+    );
+    reel_mask.endFill();
+    reelContainer.mask = reel_mask;
+}
+
+//Function to start playing.
+function startPlay() {
+    if (running) return;
+    running = true;
+
+    // hide winner Frame
+    animatedSpriteWin.stop();
+    animatedSpriteWin.visible = false;
+
+    // Add sound when reels running is set to true
+    if (running){
+        const sound = new Howl({
+            src: './assets/sounds/mp3/arcade-game-fruit-machine-jackpot-002-long.mp3'
+        });
+        sound.play();
+    };
+
+    for (let i = 0; i < reels.length; i++) {
+        const r = reels[i];
+        tweenTo(
+            r, 
+            "position", 
+            r.position + 10 + i * 5, 
+            2500 + i * 600, 
+            backout(10), 
+            null, 
+            i == reels.length - 1 ? reelsComplete : null
+        );
+    }
+}
+
+//Reels done handler.
+function reelsComplete() {
+    // display winner Frame
+    animatedSpriteWin.play();
+    animatedSpriteWin.visible = true;
+
+    running = false;
+}
+
+function tweenTo(object, property, target, time, easing, onchange, oncomplete) {
+    const tween = {
+        object,
+        property,
+        propertyBeginValue: object[property],
+        target,
+        easing,
+        time,
+        change: onchange,
+        complete: oncomplete,
+        start: Date.now()
+    };
+
+    tweening.push(tween);
+    return tween;
+}
+
+function getRealSize(_texture) {
+    const _sprite = new PIXI.Sprite(_texture);
+    let _result = {w:_sprite.width, h:_sprite.height};
+    return _result;
+}
+
+function resize() {
+    if (window.innerWidth / window.innerHeight >= ratio) {
+        var w = window.innerHeight * ratio;
+        var h = window.innerHeight;
+    } else {
+        var w = window.innerWidth;
+        var h = window.innerWidth / ratio;
+    }
+    app.view.style.width = w + 'px';
+    app.view.style.height = h + 'px';
+}
+
+
+
+
