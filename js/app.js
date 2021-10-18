@@ -60,9 +60,9 @@ function onAssetsLoaded() {
                 if (s.y < 0 && prevy > SYMBOL_SIZE) {
                     //Detect going over and swap a texture. 
                     //This should in proper product be determined from some logical reel.
-                    s.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
-                    s.scale.x = s.scale.y = Math.min(SYMBOL_SIZE / s.texture.width, SYMBOL_SIZE / s.texture.height);
-                    s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
+                    // s.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
+                    // s.scale.x = s.scale.y = Math.min(SYMBOL_SIZE / s.texture.width, SYMBOL_SIZE / s.texture.height);
+                    // s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
                 }
             }
         }

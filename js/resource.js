@@ -10,8 +10,10 @@ var running = false;
 var tweening = [];
 const res_imgs = [];
 var reelBorderContainer;
-var reelContainer;
+var winContainer;
 var animatedSpriteWin;
+
+var win_position = 0;
 
 class Resources {
     constructor(balance, level, win) {
@@ -72,8 +74,8 @@ const img_src = [
     "./assets/images/Knife/Knife_000",
     "./assets/images/M4 carbine/M4 carbine_000",
     "./assets/images/WILD/WILD_000",
-    "./assets/images/SWAT Police/SWAT Police_000",
-    "./assets/images/Terrorist/Terrorist_000",
+    // "./assets/images/SWAT Police/SWAT Police_000",
+    // "./assets/images/Terrorist/Terrorist_000",
 ];
 
 slotTextures = [
@@ -88,8 +90,8 @@ slotTextures = [
     PIXI.Texture.fromImage("./assets/images/Knife/Knife_00000.png"),
     PIXI.Texture.fromImage("./assets/images/M4 carbine/M4 carbine_00000.png"),
     PIXI.Texture.fromImage("./assets/images/WILD/WILD_00000.png"),
-    PIXI.Texture.fromImage("./assets/images/SWAT Police/SWAT Police_00000.png"),
-    PIXI.Texture.fromImage("./assets/images/Terrorist/Terrorist_00000.png"),
+    // PIXI.Texture.fromImage("./assets/images/SWAT Police/SWAT Police_00000.png"),
+    // PIXI.Texture.fromImage("./assets/images/Terrorist/Terrorist_00000.png"),
 ];
 
 PIXI.loader
