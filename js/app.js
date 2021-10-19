@@ -33,21 +33,23 @@ function onAssetsLoaded() {
     renderFooter()
     renderBoardFrame()
     renderWinner();
+    renderBigWinner();
 
     /*----------------------------ReelContainer------------------------------------*/
     reelContainer = new PIXI.Container();
 
-    selected_slot_ids = generateRandomSlots();
+    slotArray = generateRandomSlots();
 
-    renderSlots( selected_slot_ids, true )
+    renderSlots( slotArray, false );
     adjustContainerPosition();
 
     // Listen for animate update.
     app.ticker.add(delta => {
         //Update the slots.
-        for (const r of reels) {
+        for (let i = 0; i < reels.length; i++) {
             //Update blur filter y amount based on speed.
             //This would be better if calculated with time in mind also. Now blur depends on frame rate.
+            var r = reels[i];
             r.blur.blurY = (r.position - r.previousPosition) * 8;
             r.previousPosition = r.position;
 
@@ -55,22 +57,42 @@ function onAssetsLoaded() {
             //Update symbol positions on reel.
             for (let j = 0; j < r.symbols.length; j++) {
                 const s = r.symbols[j];
+                s.visible = true;
+                if (j > 1 && slotArray[i][j-1] > 10) {
+                    s.visible = false;
+                    continue;
+                }
                 const prevy = s.y;
                 s.y = (r.position + j) % r.symbols.length * SYMBOL_SIZE - SYMBOL_SIZE;
+                // console.log(i, j, slotArray[i][j], s.y, prevy);
                 if (s.y < 0 && prevy > SYMBOL_SIZE) {
                     //Detect going over and swap a texture. 
                     //This should in proper product be determined from some logical reel.
-                    // s.texture = slotTextures[Math.floor(Math.random() * slotTextures.length)];
-                    // s.scale.x = s.scale.y = Math.min(SYMBOL_SIZE / s.texture.width, SYMBOL_SIZE / s.texture.height);
-                    // s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
+                    let selected_slot = Math.floor(Math.random() * slotTextures.length);
+                    // console.log("new", i, j, selected_slot);
+                    slotArray[i][j] = selected_slot;
+                    s.texture = slotTextures[selected_slot];
+                    s.scale.x = s.scale.y = Math.max(SYMBOL_SIZE / s.texture.width, SYMBOL_SIZE / s.texture.height);
+                    s.x = Math.round((SYMBOL_SIZE - s.width) / 2);
+                    // if (j == 0) 
+                    //     s.visible = false;
+                    if( slotArray[i][j] == 0 ){
+                        s.y -= 15;
+                        s.x -= 30;
+                    }
+                    if( slotArray[i][j] == 5 )
+                        s.x += 55;
+                }
+                if( slotArray[i][j] == 10 ) {
+                    s.y -= 17;
                 }
             }
         }
     });
 
-    
-
     app.stage.addChild(reelContainer);
+
+    renderOverlay();
 }
 
 

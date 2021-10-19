@@ -12,8 +12,15 @@ const res_imgs = [];
 var reelBorderContainer;
 var winContainer;
 var animatedSpriteWin;
+var winBigContainer;
+var animatedSpriteBigWin;
+var overlayContainer;
+var freeSpinWinSprite;
+var bigWinSprite;
+var slotArray = [];
 
 var win_position = 0;
+var bigwin_position = 0;
 
 class Resources {
     constructor(balance, level, win) {
@@ -74,8 +81,8 @@ const img_src = [
     "./assets/images/Knife/Knife_000",
     "./assets/images/M4 carbine/M4 carbine_000",
     "./assets/images/WILD/WILD_000",
-    // "./assets/images/SWAT Police/SWAT Police_000",
-    // "./assets/images/Terrorist/Terrorist_000",
+    "./assets/images/SWAT Police/SWAT Police_000",
+    "./assets/images/Terrorist/Terrorist_000",
 ];
 
 slotTextures = [
@@ -90,8 +97,8 @@ slotTextures = [
     PIXI.Texture.fromImage("./assets/images/Knife/Knife_00000.png"),
     PIXI.Texture.fromImage("./assets/images/M4 carbine/M4 carbine_00000.png"),
     PIXI.Texture.fromImage("./assets/images/WILD/WILD_00000.png"),
-    // PIXI.Texture.fromImage("./assets/images/SWAT Police/SWAT Police_00000.png"),
-    // PIXI.Texture.fromImage("./assets/images/Terrorist/Terrorist_00000.png"),
+    PIXI.Texture.fromImage("./assets/images/SWAT Police/SWAT Police_00000.png"),
+    PIXI.Texture.fromImage("./assets/images/Terrorist/Terrorist_00000.png"),
 ];
 
 PIXI.loader
@@ -106,4 +113,20 @@ PIXI.loader
     .add("reelborder", "./assets/images/reel-background1.png")
     .add("reel", "./assets/images/reel-background3.png")
     .add("spin", "./assets/images/spin.png")
+    .add("bigwin", "./assets/images/big_win.png")
+    .add("freespin", "./assets/images/free_spin.png")
+    .add("overlay", "./assets/images/overlay.png")
+    .add("./assets/images/AK 47/AK 47_00000.png")
+    .add("./assets/images/A Bombsite Logo/A Bombsite Logo_00000.png")
+    .add("./assets/images/AWP sniper/AWP sniper_00000.png")
+    .add("./assets/images/C4Bomb/C4Bomb_00000.png")
+    .add("./assets/images/Defuse kit/Defuse kit_00000.png")
+    .add("./assets/images/Desert eagle/Desert eagle_00000.png")
+    .add("./assets/images/Flashbang/Flashbang_00000.png")
+    .add("./assets/images/Hand granade/Hand granade_00000.png")
+    .add("./assets/images/Knife/Knife_00000.png")
+    .add("./assets/images/M4 carbine/M4 carbine_00000.png")
+    .add("./assets/images/WILD/WILD_00000.png")
+    .add("./assets/images/SWAT Police/SWAT Police_00000.png")
+    .add("./assets/images/Terrorist/Terrorist_00000.png")
     .add(res_imgs)
