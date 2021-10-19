@@ -250,7 +250,6 @@ function renderFooter(){
         startPlay();
         playerResources.reduceBalance();
         balanceValue.text = playerResources.balance;
-        console.log(`button clicked`);
     });
 
     const btnSettingHold = new PIXI.Container();
@@ -456,10 +455,10 @@ function lerp(a1, a2, t) {
 backout = amount => t => --t * t * ((amount + 1) * t + amount) + 1;
 
 function generateRandomSlots(){
-    const rendered_slots = [];
+    let rendered_slots = [];
     for (let col = 0; col < 5; col++) {
         let selected_large_slot = false;
-        var _slot_row = [];
+        let _slot_row = [];
         for (let row = 0; row < 4; row++) {
             let slot_number = Math.floor(Math.random() * slotTextures.length);
             if (row > 1 && slot_number > 10) {
@@ -511,13 +510,11 @@ function renderSlots( selected_slot_ids, animation ){
         //Build the symbols
         for (let j = 0; j < 4; j++) {
             let selected_slot = selected_slot_ids[i][j];
-            if( selected_slot < 0 )
-                continue;
 
             const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-            symbol.y = j * SYMBOL_SIZE;
-            symbol.scale.x = symbol.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
+            // symbol.y = j * SYMBOL_SIZE - SYMBOL_SIZE;
+            // symbol.scale.x = symbol.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+            // symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
 
             if( selected_slot == 0 ){
                 symbol.y -= 15;
@@ -528,58 +525,16 @@ function renderSlots( selected_slot_ids, animation ){
             if( selected_slot == 10 ) {
                 symbol.y -= 17;
             }
-
-
             reel.symbols.push(symbol);
+            if( selected_slot < 0 )
+                reel.visible = false;
+
             rc.addChild(symbol);
 
-            // if (j == 0) {
-            //     symbol.visible = false;
-            // }
-
-            // var _frames = [];
-            // for (let j = 0; j <= image_frames; j++) {
-            //     if (j < 10) {
-            //         res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
-            //        let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
-            //         _frames.push(texture);
-            //     } else {
-            //         res_imgs.push(img_src[selected_slot] + j + ".png");
-            //        let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
-            //         _frames.push(texture);
-            //     }
-            // }
-            // let _animat = new PIXI.extras.AnimatedSprite(_frames);
-
-            // _animat.y = j * SYMBOL_SIZE;
-            // _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            // _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
-            // // if( selected_slot == 0 )
-            // //     _animat.x -= 30;
-            // if( selected_slot == 5 )
-            //     _animat.x += 55;
-            // if( selected_slot == 10 ) {
-            //     console.log("old", i, j, _animat.y);
-            //     _animat.y = j * SYMBOL_SIZE - 155;
-            //     console.log("new", _animat.y);
-            //     // _animat.visible = false;
-            // }
-
-
-            // reel.symbols.push(_animat);
-            // rc.addChild(_animat);
-
-            // slotAnimations.push( _animat )
         }
 
         reels.push(reel);
     }
-    // if( animation == true ){
-    //     setTimeout(function(){
-    //         for( ani_index = 0; ani_index < slotAnimations.length; ani_index++ )
-    //             slotAnimations[ani_index].play();
-    //     }, 3000);
-    // }
 }
 
 function adjustContainerPosition(){
@@ -622,6 +577,9 @@ function startPlay() {
 
     overlayContainer.visible = false;
 
+
+    slotArray = generateRandomSlots();
+
     // Add sound when reels running is set to true
     if (running){
         const sound = new Howl({
@@ -642,15 +600,17 @@ function startPlay() {
 //Reels done handler.
 function reelsComplete() {
     running = false;
-    slotArray = generateRandomSlots();
+console.log( slotArray )
+//     renderSlots( slotArray, false )
+    // slotArray = generateRandomSlots();
 
-    if (checkBigWin()) {
-        bigwin_position = Math.floor(Math.random() * 3);
-        showBigWin(bigwin_position);
-    } else {
-        win_position = Math.floor(Math.random() * 5);
-        showWin(win_position);
-    }
+    // if (checkBigWin()) {
+    //     bigwin_position = Math.floor(Math.random() * 3);
+    //     showBigWin(bigwin_position);
+    // } else {
+    //     win_position = Math.floor(Math.random() * 5);
+    //     showWin(win_position);
+    // }
 }
 
 function checkBigWin() {
