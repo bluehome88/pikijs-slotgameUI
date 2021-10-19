@@ -527,7 +527,7 @@ function renderSlots( selected_slot_ids, animation ){
             }
             reel.symbols.push(symbol);
             if( selected_slot < 0 )
-                reel.visible = false;
+                symbol.visible = false;
 
             rc.addChild(symbol);
 
@@ -563,6 +563,8 @@ function adjustContainerPosition(){
 function startPlay() {
     if (running) return;
     running = true;
+
+    reelContainer.children[win_position].visible = true;
     // for (var i = 1; i < reels[win_position].symbols.length; i++) {
     //     console.log(reels[win_position].symbols[i]);
     //     // reels[win_position].symbols[i].visible = false;
@@ -576,9 +578,6 @@ function startPlay() {
     animatedSpriteBigWin.visible = false;
 
     overlayContainer.visible = false;
-
-
-    slotArray = generateRandomSlots();
 
     // Add sound when reels running is set to true
     if (running){
@@ -600,17 +599,14 @@ function startPlay() {
 //Reels done handler.
 function reelsComplete() {
     running = false;
-console.log( slotArray )
-//     renderSlots( slotArray, false )
-    // slotArray = generateRandomSlots();
 
-    // if (checkBigWin()) {
-    //     bigwin_position = Math.floor(Math.random() * 3);
-    //     showBigWin(bigwin_position);
-    // } else {
-    //     win_position = Math.floor(Math.random() * 5);
-    //     showWin(win_position);
-    // }
+    if (checkBigWin()) {
+        bigwin_position = Math.floor(Math.random() * 3);
+        showBigWin(bigwin_position);
+    } else {
+        win_position = Math.floor(Math.random() * 5);
+        showWin(win_position);
+    }
 }
 
 function checkBigWin() {
@@ -626,6 +622,7 @@ function showWin(position) {
     animatedSpriteWin.visible = true;
     winContainer.x = reelBorderSize.w / 2 - 250 + (258 + 17) * 0.975 * (position % 5 - 2);
 
+    reelContainer.children[position].visible = false;
     // for (var i = 1; i < reels[win_position].symbols.length; i++) {
     //     console.log(reels[win_position].symbols[i]);
     //     // reels[win_position].symbols[i].visible = false;
