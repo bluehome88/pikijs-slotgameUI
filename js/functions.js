@@ -648,6 +648,12 @@ function showWin(position) {
         reelContainer.addChild(_animat);
     }
 
+    setTimeout(function(){
+        for( var ani_index = 5; ani_index < 9; ani_index++ ) {
+            reelContainer.children[ani_index].play();
+        }
+    }, 1000);
+
     winReelContainer.pivot.x = winContainer.x;
     winReelContainer.pivot.y = winContainer.y;
     winReelContainer.x = winContainer.x + SYMBOL_SIZE / 2;
@@ -698,6 +704,12 @@ function showBigWin(position) {
         let _animat = implementAnimation( highlight_row, i, selected_slot );
         reelContainer.addChild(_animat);
     }
+
+    setTimeout(function(){
+        for( var ani_index = 5; ani_index < 10; ani_index++ ) {
+            reelContainer.children[ani_index].play();
+        }
+    }, 1000);
 
     winBigReelContainer.pivot.x = winBigContainer.x;
     winBigReelContainer.pivot.y = winBigContainer.y+50;
@@ -776,13 +788,20 @@ function implementAnimation( row, col, selected_slot )
 
     symbol.visible = false;
 
-    _animat.play();
+    _animat.stop();
 
-    if (selected_slot == 5) 
-        _animat.x += 0;
     if (selected_slot == 0) {
-        _animat.x -= 30;
-        _animat.y -= 15;
+        _animat.x -= 70;
+        _animat.y -= 10;
+    }
+    if (selected_slot == 5) {
+        _animat.x += 0;
+    }
+    if (selected_slot == 3) {
+        _animat.x -= 15;
+    }
+    if (selected_slot == 4) {
+        _animat.x -= 15;
     }
 
     return _animat;
