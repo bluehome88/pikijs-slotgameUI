@@ -491,12 +491,6 @@ function generateRandomSlots(){
     return rendered_slots;
 }
 
-var REEL_OFFSET_X = 0;
-var REEL_OFFSET_Y = 5;
-var SYMBOL_SIZE = 258;
-var SPACE_OFFSET_REEL = 17;
-
-
 function renderSlots( selected_slot_ids, animation ){
     for (let i = 0; i < 5; i++) {
         const rc = new PIXI.Container();
@@ -540,7 +534,6 @@ function renderSlots( selected_slot_ids, animation ){
                 symbol.visible = false;
 
             rc.addChild(symbol);
-
         }
 
         reels.push(reel);
@@ -569,17 +562,24 @@ function adjustContainerPosition(){
     reelContainer.mask = reel_mask;
 }
 
+function resetSlots(){
+    if( reelContainer.children.length == 5 )
+        return;
+
+    count = reelContainer.children.length
+    for( let i = 5; i < count; i++){
+        reelContainer.children.pop();
+    }
+
+}
 //Function to start playing.
 function startPlay() {
     if (running) return;
     running = true;
+    resetSlots();
 
     reelContainer.children[win_position].visible = true;
-    // for (var i = 1; i < reels[win_position].symbols.length; i++) {
-    //     console.log(reels[win_position].symbols[i]);
-    //     // reels[win_position].symbols[i].visible = false;
-    //     reels[win_position].symbols[i].stop();
-    // }
+
     // hide winner Frame
     animatedSpriteWin.stop();
     animatedSpriteWin.visible = false;
@@ -602,7 +602,7 @@ function startPlay() {
     for (let i = 0; i < reels.length; i++) {
         const r = reels[i];
         const extra = Math.floor(Math.random() * 3);
-        const target = r.position + 10 + 5 + 40;
+        const target = r.position + MOVE_OFFSET;
         const time = 1000 + i*500+ (extra*200);//2500 + i * 600 + extra * 600;
         tweenTo(r, 'position', target, time, backout(0.3), null, i === reels.length - 1 ? reelsComplete : null);
     }
@@ -643,34 +643,9 @@ function showWin(position) {
         let selected_slot = slotArray[position][i];
         
         const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-        for (let j = 0; j <= image_frames; j++) {
 
-            if (j < 10) {
-                res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
-               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
-                _frames.push(texture);
-            } else {
-                res_imgs.push(img_src[selected_slot] + j + ".png");
-               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
-                _frames.push(texture);
-            }
-        }
-        let _animat = new PIXI.extras.AnimatedSprite(_frames);
-
-        // _animat.y = i * SYMBOL_SIZE;
-        r = reels[position];
-        _animat.y = (r.position + i) % r.symbols.length * SYMBOL_SIZE - SYMBOL_SIZE
-        _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-        _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
-        _animat.stop();
-        if (selected_slot == 5) 
-            _animat.x += 40;
-        if (selected_slot == 0) {
-            _animat.x -= 30;
-            _animat.y -= 15;
-        } 
-
-        winReelContainer.addChild(_animat);
+        let _animat = implementAnimation( i, position, selected_slot );
+        reelContainer.addChild(_animat);
     }
 
     winReelContainer.pivot.x = winContainer.x;
@@ -689,13 +664,7 @@ function showWin(position) {
     );
     reel_mask.endFill();
     winReelContainer.mask = reel_mask;
-
     winContainer.addChild(winReelContainer);
-
-    setTimeout(function(){
-        for( var ani_index = 0; ani_index < 4; ani_index++ )
-            winReelContainer.children[ani_index].play();
-    }, 1000);
 
     freeSpinWinSprite.visible = true;
     bigWinSprite.visible = false;
@@ -720,49 +689,20 @@ function showBigWin(position) {
 
     winBigReelContainer = new PIXI.Container();
     for (var i = 0; i < 5; i++) {
-        var _frames = [];       
-        let selected_slot = slotArray[i][position];
-        
+        var _frames = [];
+
+        highlight_row = ( reels[i].position / MOVE_OFFSET + position + 1 ) % 4;
+        let selected_slot = slotArray[i][ highlight_row ];
+
         const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-        for (let j = 0; j <= image_frames; j++) {
-
-            if (j < 10) {
-                res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
-               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
-                _frames.push(texture);
-            } else {
-                res_imgs.push(img_src[selected_slot] + j + ".png");
-               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
-                _frames.push(texture);
-            }
-        }
-        let _animat = new PIXI.extras.AnimatedSprite(_frames);
-
-        _animat.x = i * (SYMBOL_SIZE + SPACE_OFFSET_REEL - 7);
-        _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-        _animat.y = Math.round((SYMBOL_SIZE - symbol.height) / 2);
-        _animat.play();
-        if (selected_slot == 5) 
-            _animat.x += 0;
-        if (selected_slot == 0) {
-            _animat.x -= 30;
-            _animat.y -= 15;
-        } 
-
-        winBigReelContainer.addChild(_animat);
+        let _animat = implementAnimation( highlight_row, i, selected_slot );
+        reelContainer.addChild(_animat);
     }
 
     winBigReelContainer.pivot.x = winBigContainer.x;
-    winBigReelContainer.pivot.y = winBigContainer.y;
+    winBigReelContainer.pivot.y = winBigContainer.y+50;
     winBigReelContainer.x = winBigContainer.x - reelSize.w / 2 + 10;
     winBigReelContainer.y = winBigContainer.y - SYMBOL_SIZE / 2 + 10;
-
-    winBigContainer.addChild(winBigReelContainer);
-
-    setTimeout(function(){
-        for( var ani_index = 0; ani_index < 5; ani_index++ )
-            winBigReelContainer.children[ani_index].play();
-    }, 1000);
 
     freeSpinWinSprite.visible = false;
     bigWinSprite.visible = true;
@@ -804,6 +744,46 @@ function resize() {
     app.view.style.height = h + 'px';
 }
 
+function implementAnimation( row, col, selected_slot )
+{
+    symbol = reels[col].symbols[row]
+    x = symbol.x;
+    y = symbol.y
+
+    var _frames = [];
+    for (let j = 0; j <= image_frames; j++) {
+
+        if (j < 10) {
+            res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
+           let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
+            _frames.push(texture);
+        } else {
+            res_imgs.push(img_src[selected_slot] + j + ".png");
+           let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
+            _frames.push(texture);
+        }
+    }
+
+    let _animat = new PIXI.extras.AnimatedSprite(_frames);
+    _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+
+    _animat.x = col * (SYMBOL_SIZE + SPACE_OFFSET_REEL);
+    _animat.y = y;
 
 
+    if( symbol.visible == false )
+        _animat.visible = false;
 
+    symbol.visible = false;
+
+    _animat.play();
+
+    if (selected_slot == 5) 
+        _animat.x += 0;
+    if (selected_slot == 0) {
+        _animat.x -= 30;
+        _animat.y -= 15;
+    }
+
+    return _animat;
+}

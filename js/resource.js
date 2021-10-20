@@ -27,6 +27,13 @@ var slotArray = [];
 var win_position = 0;
 var bigwin_position = 0;
 
+var MOVE_OFFSET = 55;
+
+var REEL_OFFSET_X = 0;
+var REEL_OFFSET_Y = 5;
+var SYMBOL_SIZE = 258;
+var SPACE_OFFSET_REEL = 17;
+
 class Resources {
     constructor(balance, level, win) {
         this.balance = 100035;

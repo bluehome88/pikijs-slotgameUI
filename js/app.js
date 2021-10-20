@@ -56,7 +56,8 @@ function onAssetsLoaded() {
             //Update symbol positions on reel.
             for (let j = 0; j < r.symbols.length; j++) {
                 const s = r.symbols[j];
-                s.visible = true;
+                if(running)
+                    s.visible = true;
                 const prevy = s.y;
 
                 if( slotArray[i][j-1] > 10 && j < 4){
