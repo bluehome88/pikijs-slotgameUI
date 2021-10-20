@@ -84,10 +84,15 @@ function renderWinner(){
     animatedSpriteWin.stop();
     animatedSpriteWin.visible = false;
     winContainer.addChild(animatedSpriteWin);
+
+    winReelContainer = new PIXI.Container();
+    winContainer.addChild(winReelContainer);
+
     winContainer.pivot.x = 0;
     winContainer.pivot.y = 0;
     winContainer.x = reelBorderSize.w / 2 - 250 - (258 + 17) * 0.975 * 0;
     winContainer.y = -8;
+
     reelBorderContainer.addChild(winContainer);
 }
 
@@ -116,11 +121,16 @@ function renderBigWinner(){
     animatedSpriteBigWin.scale.x = 1;
     animatedSpriteBigWin.stop();
     animatedSpriteBigWin.visible = false;
+
+    winBigReelContainer = new PIXI.Container();
+    winBigContainer.addChild(winBigReelContainer);
+
     winBigContainer.addChild(animatedSpriteBigWin);
     winBigContainer.pivot.x = 0;
     winBigContainer.pivot.y = -80;
     winBigContainer.x = reelBorderSize.w / 2;
     winBigContainer.y = reelSize.h / 2 + (reelSize.h / 3) * 0;
+
     reelBorderContainer.addChild(winBigContainer);
 }
 
@@ -573,9 +583,11 @@ function startPlay() {
     // hide winner Frame
     animatedSpriteWin.stop();
     animatedSpriteWin.visible = false;
+    winReelContainer.visible = false;
 
     animatedSpriteBigWin.stop();
     animatedSpriteBigWin.visible = false;
+    winBigReelContainer.visible = false;
 
     overlayContainer.visible = false;
 
@@ -610,12 +622,13 @@ function reelsComplete() {
 }
 
 function checkBigWin() {
-    var bet = Math.floor(Math.random() * 2);
-    return ( bet > 0 );
+    var big_bet = Math.floor(Math.random() * 2);
+    return ( big_bet > 0 );
 }
 
 function showWin(position) {
     let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
+    let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
 
     // display winner Frame
     animatedSpriteWin.play();
@@ -623,11 +636,64 @@ function showWin(position) {
     winContainer.x = reelBorderSize.w / 2 - 250 + (258 + 17) * 0.975 * (position % 5 - 2);
 
     reelContainer.children[position].visible = false;
-    // for (var i = 1; i < reels[win_position].symbols.length; i++) {
-    //     console.log(reels[win_position].symbols[i]);
-    //     // reels[win_position].symbols[i].visible = false;
-    //     reels[win_position].symbols[i].play();
-    // }
+
+    winReelContainer = new PIXI.Container();
+    for (var i = 0; i < 4; i++) {
+        var _frames = [];       
+        let selected_slot = slotArray[position][i];
+        
+        const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
+        for (let j = 0; j <= image_frames; j++) {
+
+            if (j < 10) {
+                res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
+               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
+                _frames.push(texture);
+            } else {
+                res_imgs.push(img_src[selected_slot] + j + ".png");
+               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
+                _frames.push(texture);
+            }
+        }
+        let _animat = new PIXI.extras.AnimatedSprite(_frames);
+
+        _animat.y = i * SYMBOL_SIZE;
+        _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+        _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
+        _animat.stop();
+        if (selected_slot == 5) 
+            _animat.x += 40;
+        if (selected_slot == 0) {
+            _animat.x -= 30;
+            _animat.y -= 15;
+        } 
+
+        winReelContainer.addChild(_animat);
+    }
+
+    winReelContainer.pivot.x = winContainer.x;
+    winReelContainer.pivot.y = winContainer.y;
+    winReelContainer.x = winContainer.x + SYMBOL_SIZE / 2;
+    winReelContainer.y = winContainer.y + 75;
+    // winReelContainer.scale.y = 0.95;
+
+    const reel_mask = new PIXI.Graphics();
+    reel_mask.beginFill(0xFF3300);
+    reel_mask.drawRect(
+        winReelContainer.x, 
+        winReelContainer.y, 
+        winReelContainer.x + SYMBOL_SIZE * 2, 
+        winReelContainer.y + reelSize.h, 
+    );
+    reel_mask.endFill();
+    winReelContainer.mask = reel_mask;
+
+    winContainer.addChild(winReelContainer);
+
+    setTimeout(function(){
+        for( var ani_index = 0; ani_index < 4; ani_index++ )
+            winReelContainer.children[ani_index].play();
+    }, 1000);
 
     freeSpinWinSprite.visible = true;
     bigWinSprite.visible = false;
@@ -650,11 +716,51 @@ function showBigWin(position) {
     }
     winBigContainer.y = reelSize.h / 2 + (reelSize.h / 3) * (position % 3 - 1);
 
-    // for (var i = 1; i < reels[win_position].symbols.length; i++) {
-    //     console.log(reels[win_position].symbols[i]);
-    //     // reels[win_position].symbols[i].visible = false;
-    //     reels[win_position].symbols[i].play();
-    // }
+    winBigReelContainer = new PIXI.Container();
+    for (var i = 0; i < 5; i++) {
+        var _frames = [];       
+        let selected_slot = slotArray[i][position];
+        
+        const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
+        for (let j = 0; j <= image_frames; j++) {
+
+            if (j < 10) {
+                res_imgs.push(img_src[selected_slot] + "0" + j + ".png");
+               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + "0" + j + ".png");
+                _frames.push(texture);
+            } else {
+                res_imgs.push(img_src[selected_slot] + j + ".png");
+               let texture = PIXI.Texture.fromImage(img_src[selected_slot] + j + ".png");
+                _frames.push(texture);
+            }
+        }
+        let _animat = new PIXI.extras.AnimatedSprite(_frames);
+
+        _animat.x = i * (SYMBOL_SIZE + SPACE_OFFSET_REEL - 7);
+        _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
+        _animat.y = Math.round((SYMBOL_SIZE - symbol.height) / 2);
+        _animat.play();
+        if (selected_slot == 5) 
+            _animat.x += 0;
+        if (selected_slot == 0) {
+            _animat.x -= 30;
+            _animat.y -= 15;
+        } 
+
+        winBigReelContainer.addChild(_animat);
+    }
+
+    winBigReelContainer.pivot.x = winBigContainer.x;
+    winBigReelContainer.pivot.y = winBigContainer.y;
+    winBigReelContainer.x = winBigContainer.x - reelSize.w / 2 + 10;
+    winBigReelContainer.y = winBigContainer.y - SYMBOL_SIZE / 2 + 10;
+
+    winBigContainer.addChild(winBigReelContainer);
+
+    setTimeout(function(){
+        for( var ani_index = 0; ani_index < 5; ani_index++ )
+            winBigReelContainer.children[ani_index].play();
+    }, 1000);
 
     freeSpinWinSprite.visible = false;
     bigWinSprite.visible = true;

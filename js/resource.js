@@ -10,10 +10,15 @@ var running = false;
 var tweening = [];
 const res_imgs = [];
 var reelBorderContainer;
+
 var winContainer;
 var animatedSpriteWin;
+var winReelContainer;
+
 var winBigContainer;
 var animatedSpriteBigWin;
+var winBigReelContainer;
+
 var overlayContainer;
 var freeSpinWinSprite;
 var bigWinSprite;

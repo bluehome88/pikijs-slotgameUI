@@ -66,7 +66,7 @@ function onAssetsLoaded() {
                 s.y = (r.position + j) % r.symbols.length * SYMBOL_SIZE - SYMBOL_SIZE;
                 s.x = Math.round((SYMBOL_SIZE - s.width) / 2);;
                 if( slotArray[i][j] == 0 ){
-                    s.y -= 15;
+                    s.y -= 45;
                     s.x -= 30;
                 }
                 if( slotArray[i][j] == 5 )
