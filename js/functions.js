@@ -562,6 +562,35 @@ function adjustContainerPosition(){
     reelContainer.mask = reel_mask;
 }
 
+function displayRowPayline(position) {
+    var paylineContainer =  new PIXI.Container();
+    let x_position = position * SYMBOL_SIZE + (position - 1) * SPACE_OFFSET_REEL;
+    for (var i = 0; i < 3; i++) {
+        let _animat = new PIXI.extras.AnimatedSprite(payline_frames);
+        _animat.x = x_position;
+        if (i == 0) {
+            _animat.y = -SYMBOL_SIZE / 2 - 20;
+            _animat.scale.x = 1.5;
+        } else if ( i == 1 ) {
+            _animat.y = i * SYMBOL_SIZE - SYMBOL_SIZE / 2;
+        } else if ( i == 2 ) {
+            _animat.y = i * SYMBOL_SIZE - SYMBOL_SIZE / 2 - 50;
+            _animat.scale.x = 1.5;
+        }
+        _animat.rotation = Math.PI / 2;
+        _animat.play();
+
+        paylineContainer.addChild(_animat);
+    }
+
+    paylineContainer.pivot.x = reelContainer.x;
+    paylineContainer.pivot.y = reelContainer.y;
+    paylineContainer.x = reelContainer.x;
+    paylineContainer.y = reelContainer.y;
+
+    reelContainer.addChild(paylineContainer);
+}
+
 function displayPayline(payline_path) {
     var paylineContainer =  new PIXI.Container();
 
