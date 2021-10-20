@@ -60,7 +60,7 @@ function onAssetsLoaded() {
                     s.visible = true;
                 const prevy = s.y;
 
-                if( slotArray[i][j-1] > 10 && j < 4){
+                if( slotArray[i][j-1] > 10 || j == 0 && slotArray[i][3] > 10 ){
                     s.visible = false;
                 }
 
