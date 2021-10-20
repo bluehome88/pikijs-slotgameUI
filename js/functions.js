@@ -657,7 +657,9 @@ function showWin(position) {
         }
         let _animat = new PIXI.extras.AnimatedSprite(_frames);
 
-        _animat.y = i * SYMBOL_SIZE;
+        // _animat.y = i * SYMBOL_SIZE;
+        r = reels[position];
+        _animat.y = (r.position + i) % r.symbols.length * SYMBOL_SIZE - SYMBOL_SIZE
         _animat.scale.x = _animat.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
         _animat.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
         _animat.stop();
