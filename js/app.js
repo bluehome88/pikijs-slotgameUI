@@ -80,7 +80,11 @@ function onAssetsLoaded() {
                     //Detect going over and swap a texture. 
                     //This should in proper product be determined from some logical reel.
                     let selected_slot = Math.floor(Math.random() * slotTextures.length);
+
+                    // check overlap
                     if( (slotArray[i][j-1] > 10 && selected_slot) > 10 || (slotArray[i][j+1] > 10 && selected_slot > 10) )
+                        selected_slot = Math.floor(Math.random() * (slotTextures.length - 2));
+                    if(  selected_slot > 10 && ( slotArray[i][0] > 10 && j == 3 || slotArray[i][3] > 10 && j ==0 ) )
                         selected_slot = Math.floor(Math.random() * (slotTextures.length - 2));
 
                     slotArray[i][j] = selected_slot;
