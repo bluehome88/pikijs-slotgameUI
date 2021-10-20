@@ -562,6 +562,69 @@ function adjustContainerPosition(){
     reelContainer.mask = reel_mask;
 }
 
+function displayPayline(payline_path) {
+    var paylineContainer =  new PIXI.Container();
+
+    let _f_animat = new PIXI.extras.AnimatedSprite(payline_frames);
+    _f_animat.x = -50;
+    _f_animat.y = payline_path[0] * SYMBOL_SIZE;
+    _f_animat.scale.x = 0.5;
+    _f_animat.play();
+    paylineContainer.addChild(_f_animat);
+
+    for (var i = 0; i < (payline_path.length - 1); i++) {
+
+        let _animat = new PIXI.extras.AnimatedSprite(payline_frames);
+        _animat.x = i * (SYMBOL_SIZE + SPACE_OFFSET_REEL);
+        _animat.y = payline_path[i] * SYMBOL_SIZE - SYMBOL_SIZE / 2;
+
+        var _angle = 0;
+        if ( (payline_path[i+1] - payline_path[i]) == 0) {
+            _animat.scale.x = 1.2;
+            _animat.x -= 15;
+            _animat.y += SYMBOL_SIZE / 2;
+        } else if ( (payline_path[i+1] - payline_path[i]) == 1) {
+            _angle = Math.PI / 4;
+            _animat.scale.x = 1.5;
+            _animat.x += SYMBOL_SIZE / 2;
+            _animat.y += SYMBOL_SIZE / 2 - 60;
+        } else if ( (payline_path[i+1] - payline_path[i]) == 2) {
+            _angle = Math.PI / 2.9;
+            _animat.scale.x = 2.2;
+            _animat.x += SYMBOL_SIZE / 2;
+            // _animat.y -= SYMBOL_SIZE / 2;
+        } if ( (payline_path[i+1] - payline_path[i]) == -1) {
+            _angle = -Math.PI / 4;
+            _animat.scale.x = 1.5;
+            _animat.x -= SYMBOL_SIZE / 2 - 75;
+            _animat.y += SYMBOL_SIZE + 40;
+        } else if ( (payline_path[i+1] - payline_path[i]) == -2) {
+            _angle = -Math.PI / 2.9;
+            _animat.scale.x = 2.2;
+            _animat.x -= SYMBOL_SIZE / 2 - 50;
+            _animat.y += SYMBOL_SIZE * 1.5;
+        }
+        _animat.rotation = _angle;
+        _animat.play();
+
+        paylineContainer.addChild(_animat);
+    }
+
+    let _t_animat = new PIXI.extras.AnimatedSprite(payline_frames);
+    _t_animat.x = SYMBOL_SIZE * payline_path.length - SYMBOL_SIZE / 2 + 10;
+    _t_animat.y = payline_path[4] * SYMBOL_SIZE;
+    _t_animat.scale.x = 0.5;
+    _t_animat.play();
+    paylineContainer.addChild(_t_animat);
+
+    paylineContainer.pivot.x = reelContainer.x;
+    paylineContainer.pivot.y = reelContainer.y;
+    paylineContainer.x = reelContainer.x;
+    paylineContainer.y = reelContainer.y;
+
+    reelContainer.addChild(paylineContainer);
+}
+
 function resetSlots(){
     if( reelContainer.children.length == 5 )
         return;

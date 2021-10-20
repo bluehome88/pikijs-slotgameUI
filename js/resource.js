@@ -142,3 +142,15 @@ PIXI.loader
     .add("./assets/images/SWAT Police/SWAT Police_00000.png")
     .add("./assets/images/Terrorist/Terrorist_00000.png")
     .add(res_imgs)
+
+var payline_frames = [];
+for (let j = 0; j <= image_frames; j++) {
+
+    if (j < 10) {
+       let texture = PIXI.Texture.fromImage("./assets/images/Pay-Line/Pay-Line_0000" + j + ".png");
+        payline_frames.push(texture);
+    } else {
+       let texture = PIXI.Texture.fromImage("./assets/images/Pay-Line/Pay-Line_000" + j + ".png");
+        payline_frames.push(texture);
+    }
+}
