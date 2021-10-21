@@ -84,6 +84,9 @@ function adjustContainerPosition(){
     reelContainer.y = reelBorderContainer.y + reelBorderSize.h / 2 - 28;
     reelContainer.scale.set(0.973, 0.938);
 
+    paylineContainer =  new PIXI.Container();
+    reelContainer.addChild(paylineContainer);
+
     const reel_mask = new PIXI.Graphics();
     reel_mask.beginFill(0xFF3300);
     reel_mask.drawRect(
@@ -96,8 +99,15 @@ function adjustContainerPosition(){
     reelContainer.mask = reel_mask;
 }
 
+function resetPayline() {
+    count = paylineContainer.children.length
+    for( let i = 0; i < count; i++){
+        paylineContainer.children.pop();
+    }
+}
+
 function displayPayline(payline_path) {
-    var paylineContainer =  new PIXI.Container();
+    var paylines =  new PIXI.Container();
 
     let _f_animat = new PIXI.extras.AnimatedSprite(payline_frames);
     _f_animat.x = -50;
@@ -141,7 +151,7 @@ function displayPayline(payline_path) {
         _animat.rotation = _angle;
         _animat.play();
 
-        paylineContainer.addChild(_animat);
+        paylines.addChild(_animat);
     }
 
     let _t_animat = new PIXI.extras.AnimatedSprite(payline_frames);
@@ -149,25 +159,24 @@ function displayPayline(payline_path) {
     _t_animat.y = payline_path[4] * SYMBOL_SIZE;
     _t_animat.scale.x = 0.5;
     _t_animat.play();
-    paylineContainer.addChild(_t_animat);
+    paylines.addChild(_t_animat);
 
-    paylineContainer.pivot.x = reelContainer.x;
-    paylineContainer.pivot.y = reelContainer.y;
-    paylineContainer.x = reelContainer.x;
-    paylineContainer.y = reelContainer.y;
+    paylines.pivot.x = reelContainer.x;
+    paylines.pivot.y = reelContainer.y;
+    paylines.x = reelContainer.x;
+    paylines.y = reelContainer.y;
 
-    reelContainer.addChild(paylineContainer);
+    paylineContainer.addChild(paylines);
 }
 
 function resetSlots(){
-    if( reelContainer.children.length == 5 )
+    if( reelContainer.children.length == SIZE_CHILDREN_REEL )
         return;
 
     count = reelContainer.children.length
-    for( let i = 5; i < count; i++){
+    for( let i = SIZE_CHILDREN_REEL; i < count; i++){
         reelContainer.children.pop();
     }
-
 }
 
 //Basic lerp funtion.
@@ -183,6 +192,7 @@ function startPlay() {
     if (running) return;
     running = true;
     resetSlots();
+    resetPayline();
 
     reelContainer.children[win_position].visible = true;
 
@@ -191,10 +201,12 @@ function startPlay() {
     animatedSpriteWin.visible = false;
     winReelContainer.visible = false;
 
+    // hide BigWin Frame
     animatedSpriteBigWin.stop();
     animatedSpriteBigWin.visible = false;
     winBigReelContainer.visible = false;
 
+    // hide overlay to display win
     overlayContainer.visible = false;
 
     // Add sound when reels running is set to true
@@ -221,9 +233,11 @@ function reelsComplete() {
     if (checkBigWin()) {
         bigwin_position = Math.floor(Math.random() * 3);
         // showBigWin(bigwin_position);
+        let payline_path = [bigwin_position, bigwin_position, bigwin_position, bigwin_position, bigwin_position];
+        displayPayline(payline_path);
     } else {
         win_position = Math.floor(Math.random() * 5);
-        // showWin(win_position);
+        showWin(win_position);
     }
 }
 
@@ -255,7 +269,8 @@ function showWin(position) {
     }
 
     setTimeout(function(){
-        for( var ani_index = 5; ani_index < 9; ani_index++ ) {
+        count = reelContainer.children.length;
+        for( var ani_index = SIZE_CHILDREN_REEL; ani_index < count; ani_index++ ) {
             reelContainer.children[ani_index].play();
         }
     }, 1000);
@@ -284,11 +299,10 @@ function showWin(position) {
 }
 
 function showBigWin(position) {
-    // body...
     let reelBorderSize = getRealSize(PIXI.loader.resources.reelborder.texture);
     let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
 
-    // display winner Frame
+    // display BigWin Frame
     animatedSpriteBigWin.play();
     animatedSpriteBigWin.visible = true;
     winBigContainer.x = reelBorderSize.w / 2;
@@ -312,7 +326,8 @@ function showBigWin(position) {
     }
 
     setTimeout(function(){
-        for( var ani_index = 5; ani_index < 10; ani_index++ ) {
+        count = reelContainer.children.length;
+        for( var ani_index = SIZE_CHILDREN_REEL; ani_index < count; ani_index++ ) {
             reelContainer.children[ani_index].play();
         }
     }, 1000);

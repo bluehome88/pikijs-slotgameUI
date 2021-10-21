@@ -43,10 +43,10 @@ function onAssetsLoaded() {
     renderSlots( slotArray, false );
     adjustContainerPosition();
 
-    let payline_path = [0, 0, 0, 0, 0];
-    displayPayline(payline_path);
-    payline_path = [1, 1, 1, 1, 1];
-    displayPayline(payline_path);
+    // let payline_path = [0, 0, 0, 0, 0];
+    // displayPayline(payline_path);
+    // payline_path = [1, 1, 1, 1, 1];
+    // displayPayline(payline_path);
     // payline_path = [1, 2, 1, 2, 1];
     // displayPayline(payline_path);
     // payline_path = [2, 0, 2, 0, 2];

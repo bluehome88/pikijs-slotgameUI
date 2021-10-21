@@ -1,15 +1,15 @@
 const image_frames = 89;
 var app
-
 var reels = [];
 var slotTextures = [];
 var slotAnimations = [];
 var reelContainer;
-var reel;
 var running = false;
 var tweening = [];
 const res_imgs = [];
 var reelBorderContainer;
+
+var paylineContainer;
 
 var winContainer;
 var animatedSpriteWin;
@@ -29,7 +29,8 @@ var bigwin_position = 0;
 
 var payline_frames = [];
 
-var MOVE_OFFSET = 55;
+const MOVE_OFFSET = 55; // offset for tween
+const SIZE_CHILDREN_REEL = 6; // default size of children in reelContainer
 
 var REEL_OFFSET_X = 0;
 var REEL_OFFSET_Y = 5;
