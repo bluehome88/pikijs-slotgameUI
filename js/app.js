@@ -52,9 +52,6 @@ function onAssetsLoaded() {
     // payline_path = [2, 0, 2, 0, 2];
     // displayPayline(payline_path);
 
-    // displayRowPayline(2);
-    // displayRowPayline(4);
-
     // Listen for animate update.
     app.ticker.add(delta => {
         //Update the slots.
