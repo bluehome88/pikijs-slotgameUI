@@ -27,6 +27,8 @@ var slotArray = [];
 var win_position = 0;
 var bigwin_position = 0;
 
+var payline_frames = [];
+
 var MOVE_OFFSET = 55;
 
 var REEL_OFFSET_X = 0;
@@ -143,9 +145,7 @@ PIXI.loader
     .add("./assets/images/Terrorist/Terrorist_00000.png")
     .add(res_imgs)
 
-var payline_frames = [];
 for (let j = 0; j <= image_frames; j++) {
-
     if (j < 10) {
        let texture = PIXI.Texture.fromImage("./assets/images/Pay-Line/Pay-Line_0000" + j + ".png");
         payline_frames.push(texture);
