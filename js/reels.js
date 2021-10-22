@@ -40,7 +40,6 @@ function renderSlots( selected_slot_ids, animation ){
             blur: new PIXI.filters.BlurFilter()
         };
 
-        //let newposition = reel.reelContainer.getChildIndex;
         reel.blur.blurX = 0;
         reel.blur.blurY = 0;
         rc.filters = [reel.blur];
@@ -50,9 +49,6 @@ function renderSlots( selected_slot_ids, animation ){
             let selected_slot = selected_slot_ids[i][j];
 
             const symbol = new PIXI.Sprite(slotTextures[selected_slot]);
-            // symbol.y = j * SYMBOL_SIZE - SYMBOL_SIZE;
-            // symbol.scale.x = symbol.scale.y = Math.max(SYMBOL_SIZE / symbol.width, SYMBOL_SIZE / symbol.height);
-            // symbol.x = Math.round((SYMBOL_SIZE - symbol.width) / 2);
 
             if( selected_slot == 0 ){
                 symbol.y -= 15;
@@ -84,9 +80,6 @@ function adjustContainerPosition(){
     reelContainer.y = reelBorderContainer.y + reelBorderSize.h / 2 - 28;
     reelContainer.scale.set(0.973, 0.938);
 
-    paylineContainer =  new PIXI.Container();
-    reelContainer.addChild(paylineContainer);
-
     const reel_mask = new PIXI.Graphics();
     reel_mask.beginFill(0xFF3300);
     reel_mask.drawRect(
@@ -99,13 +92,6 @@ function adjustContainerPosition(){
     reelContainer.mask = reel_mask;
 }
 
-function resetPayline() {
-    count = paylineContainer.children.length
-    for( let i = 0; i < count; i++){
-        paylineContainer.children.pop();
-    }
-}
-
 function displayPayline(payline_path) {
     var paylines =  new PIXI.Container();
 
@@ -114,7 +100,7 @@ function displayPayline(payline_path) {
     _f_animat.y = payline_path[0] * SYMBOL_SIZE;
     _f_animat.scale.x = 0.5;
     _f_animat.play();
-    paylineContainer.addChild(_f_animat);
+    paylines.addChild(_f_animat);
 
     for (var i = 0; i < (payline_path.length - 1); i++) {
 
@@ -166,7 +152,7 @@ function displayPayline(payline_path) {
     paylines.x = reelContainer.x;
     paylines.y = reelContainer.y;
 
-    paylineContainer.addChild(paylines);
+    reelContainer.addChild(paylines);
 }
 
 function resetSlots(){
@@ -192,7 +178,6 @@ function startPlay() {
     if (running) return;
     running = true;
     resetSlots();
-    resetPayline();
 
     reelContainer.children[win_position].visible = true;
 
@@ -232,7 +217,7 @@ function reelsComplete() {
 
     if (checkBigWin()) {
         bigwin_position = Math.floor(Math.random() * 3);
-        // showBigWin(bigwin_position);
+        showBigWin(bigwin_position);
         let payline_path = [bigwin_position, bigwin_position, bigwin_position, bigwin_position, bigwin_position];
         displayPayline(payline_path);
     } else {
@@ -303,8 +288,8 @@ function showBigWin(position) {
     let reelSize = getRealSize(PIXI.loader.resources.reel.texture);
 
     // display BigWin Frame
-    animatedSpriteBigWin.play();
-    animatedSpriteBigWin.visible = true;
+    // animatedSpriteBigWin.play();
+    // animatedSpriteBigWin.visible = true;
     winBigContainer.x = reelBorderSize.w / 2;
     if (position == 2) {
         winBigContainer.pivot.y = -50;
@@ -337,9 +322,9 @@ function showBigWin(position) {
     winBigReelContainer.x = winBigContainer.x - reelSize.w / 2 + 10;
     winBigReelContainer.y = winBigContainer.y - SYMBOL_SIZE / 2 + 10;
 
-    freeSpinWinSprite.visible = false;
-    bigWinSprite.visible = true;
-    overlayContainer.visible = true;
+    // freeSpinWinSprite.visible = false;
+    // bigWinSprite.visible = true;
+    // overlayContainer.visible = true;
 }
 
 function tweenTo(object, property, target, time, easing, onchange, oncomplete) {

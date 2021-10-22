@@ -9,8 +9,6 @@ var tweening = [];
 const res_imgs = [];
 var reelBorderContainer;
 
-var paylineContainer;
-
 var winContainer;
 var animatedSpriteWin;
 var winReelContainer;
@@ -30,7 +28,7 @@ var bigwin_position = 0;
 var payline_frames = [];
 
 const MOVE_OFFSET = 55; // offset for tween
-const SIZE_CHILDREN_REEL = 6; // default size of children in reelContainer
+const SIZE_CHILDREN_REEL = 5; // default size of children in reelContainer
 
 var REEL_OFFSET_X = 0;
 var REEL_OFFSET_Y = 5;
